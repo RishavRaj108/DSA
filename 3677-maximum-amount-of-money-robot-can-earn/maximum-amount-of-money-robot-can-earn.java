@@ -10,7 +10,7 @@ class Solution {
         // aim to reach (m - 1)(n - 1)
         int m = coins.length;
         int n = coins[0].length;
-        int[][][] dp = new int[m + 1][n + 1][2 + 1];
+        int[][][] dp = new int[m ][n][2 + 1];
         for(int[][] mat:dp){
             for(int[] row : mat){
                 Arrays.fill(row,Integer.MIN_VALUE);
