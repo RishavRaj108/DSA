@@ -1,45 +1,49 @@
 class Solution {
-    public int minCost(int n, int[][] edges) {
-        // Building augmented graph
-        ArrayList<int[]>[] adj = new ArrayList[n];
-        for (int i = 0; i < n; i++) 
-            adj[i] = new ArrayList<>();
 
-        for (int i = 0; i < edges.length; i++) {
-            int u = edges[i][0], v = edges[i][1], w = edges[i][2];
-            adj[u].add(new int[]{v, w});
-            adj[v].add(new int[]{u, 2 * w});
-        }
+  private static final int INF = Integer.MAX_VALUE / 2;
 
-        // Initialize distance array from 0 node
-        final int INF = 1000000000;
-        int[] dist = new int[n];
-        for (int i = 0; i < n; i++) 
-            dist[i] = INF;
-        dist[0] = 0;
+  public int minCost(int n, int[][] edges) {
 
-        // Dijkstra
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
-        pq.add(new int[]{0, 0});
+      // Build adjacency list
+      List<List<int[]>> graph = new ArrayList<>();
+      for (int i = 0; i < n; i++) {
+          graph.add(new ArrayList<>());
+      }
 
-        while (!pq.isEmpty()) {
-            int[] cur = pq.poll();
-            int d = cur[0], u = cur[1];
-            if (u == n - 1)  // Early exit
-                return d;
-            if (d != dist[u])  // Stale edge
-                continue;
+      // Add asymmetric edges
+      for (int[] e : edges) {
+          int u = e[0], v = e[1], w = e[2];
+          graph.get(u).add(new int[]{v, w});
+          graph.get(v).add(new int[]{u, w * 2});
+      }
 
-            for (int i = 0; i < adj[u].size(); i++) {
-                int[] e = adj[u].get(i);
-                int v = e[0], w = e[1];
-                if (dist[u] + w < dist[v]) {  // Edge relaxation
-                    dist[v] = dist[u] + w;
-                    pq.add(new int[]{dist[v], v});
-                }
-            }
-        }
+      // Distance array
+      int[] dist = new int[n];
+      Arrays.fill(dist, INF);
+      dist[0] = 0;
 
-        return -1;
-    }
+      // Min-heap for Dijkstra
+      PriorityQueue<int[]> pq = new PriorityQueue<>(
+          (a, b) -> Integer.compare(a[0], b[0])
+      );
+
+      pq.offer(new int[]{0, 0}); // {distance, node}
+
+      while (!pq.isEmpty()) {
+          int[] cur = pq.poll();
+          int d = cur[0], node = cur[1];
+
+          if (d > dist[node]) continue;
+
+          for (int[] edge : graph.get(node)) {
+              int next = edge[0], cost = edge[1];
+              if (dist[next] > d + cost) {
+                  dist[next] = d + cost;
+                  pq.offer(new int[]{dist[next], next});
+              }
+          }
+      }
+
+      return dist[n - 1] >= INF ? -1 : dist[n - 1];
+  }
 }
