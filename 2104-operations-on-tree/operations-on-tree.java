@@ -1,73 +1,69 @@
 class LockingTree {
-
+    // write the states that are needed and provided
+    // we are going to need parent , children and lock status for each tree node
+    // learn to break problems in parts
     int[] parent;
+    int[] locked;
     List<Integer>[] children;
-    int[] locked; // -1 = unlocked, else userId
-
     public LockingTree(int[] parent) {
-        int n = parent.length;
         this.parent = parent;
+        int n = parent.length;
         locked = new int[n];
-        Arrays.fill(locked, -1);
-
+        Arrays.fill(locked , - 1);
         children = new ArrayList[n];
-        for (int i = 0; i < n; i++) children[i] = new ArrayList<>();
-
-        for (int i = 1; i < n; i++) {
+        for(int i = 0;i < n;i++)children[i] = new ArrayList<>();
+        for(int i = 1;i < n;i++){
             children[parent[i]].add(i);
         }
     }
-
+    
     public boolean lock(int num, int user) {
-        if (locked[num] != -1) return false;
+        if(locked[num] != -1)return false;
         locked[num] = user;
         return true;
     }
-
+    
     public boolean unlock(int num, int user) {
-        if (locked[num] != user) return false;
+        if(locked[num] != user)return false;
         locked[num] = -1;
         return true;
     }
-
+    
     public boolean upgrade(int num, int user) {
-        // condition 1: node must be unlocked
-        if (locked[num] != -1) return false;
+        // for upgrade 
+        if(locked[num] != -1)return false;
 
-        // condition 3: no locked ancestors
-        int cur = parent[num];
-        while (cur != -1) {
-            if (locked[cur] != -1) return false;
-            cur = parent[cur];
+        // check for the parents of num
+        int par = parent[num];
+        while(par != -1){
+            if(locked[par] != -1)return false;
+            par = parent[par];
         }
 
-        // condition 2: at least one locked descendant
-        if (!hasLockedDescendant(num)) return false;
-
-        // unlock all descendants
-        unlockDescendants(num);
-
-        // lock current node
+        // check for at least one decendent
+        if(!hasAtLeastOne(num))return false;
+        
+        // unlock all descendant
+        unlockAll(num);
         locked[num] = user;
         return true;
     }
+    public void unlockAll(int num){
+        for(int child : children[num]){
+            locked[child] = -1;
+            unlockAll(child);
+        }
+    }
 
-    private boolean hasLockedDescendant(int node) {
-        for (int child : children[node]) {
-            if (locked[child] != -1 || hasLockedDescendant(child))
+    public boolean hasAtLeastOne(int num){
+        for(int child : children[num]){
+            if(locked[child] != -1 || hasAtLeastOne(child)){
                 return true;
+            }
         }
         return false;
     }
-
-    private void unlockDescendants(int node) {
-        for (int child : children[node]) {
-            locked[child] = -1;
-            unlockDescendants(child);
-        }
-    }
 }
-
 
 /**
  * Your LockingTree object will be instantiated and called as such:
