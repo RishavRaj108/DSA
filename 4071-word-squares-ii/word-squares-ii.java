@@ -1,0 +1,32 @@
+class Solution {
+    public List<List<String>> wordSquares(String[] words) {
+        List<List<String>> res = new ArrayList<>();
+        int n = words.length;
+        for(int i = 0;i < n;i++){
+            for(int j = 0;j < n;j++){
+                if(j == i)continue;
+                for(int k = 0;k < n;k++){
+                    if(k == i || k == j)continue;
+                    for(int l = 0;l < n;l++){
+                        if(l == k || l == i || l == j)continue;
+                        String top = words[i];
+                        String bottom = words[j];
+                        String left = words[k];
+                        String right = words[l];
+                        if(top.charAt(0) == left.charAt(0) && top.charAt(3) == right.charAt(0) && bottom.charAt(0) == left.charAt(3) && bottom.charAt(3) == right.charAt(3)){
+                          List<String> ls = new ArrayList<>();
+                          ls.add(top);
+                          ls.add(left);
+                          ls.add(right);
+                          ls.add(bottom);
+                          res.add(ls);  
+                        }
+                    }
+                }
+            }
+        }
+
+        res.sort((a,b) -> a.toString().compareTo(b.toString()));
+        return res;
+    }
+}
