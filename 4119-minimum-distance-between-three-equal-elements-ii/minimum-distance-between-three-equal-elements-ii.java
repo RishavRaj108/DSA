@@ -10,16 +10,11 @@ class Solution {
         int ans = Integer.MAX_VALUE;
         for(List<Integer> list : mp.values()){
             if(list.size() < 3)continue;
-            int ind1 = list.get(0);
-            int ind2 = list.get(1);
-            int ind3 = list.get(2);
-            ans = Math.min(ans, Math.abs(ind1 - ind2) + Math.abs(ind2 - ind3) + Math.abs(ind3 - ind1));
-            for(int i = 3;i < list.size();i++){
-                // now the formula
-                ind1 = ind2;
-                ind2 = ind3;
-                ind3 = list.get(i);
-                ans = Math.min(ans, Math.abs(ind1 - ind2) + Math.abs(ind2 - ind3) + Math.abs(ind3 - ind1));
+            for(int i = 0;i + 2 < list.size();i++){
+                // now the formula since k > j > i always
+                // formula can be reduced into
+                // (j - i + k - j + k - i) - > results into 2(k - i)
+                ans = Math.min(ans, 2 * ( list.get(i + 2) - list.get(i)));
             }
         }
         return ans == Integer.MAX_VALUE? -1 : ans;
