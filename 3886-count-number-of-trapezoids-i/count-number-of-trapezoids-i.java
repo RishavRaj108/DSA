@@ -1,27 +1,20 @@
 class Solution {
-    static final int M = (int)1e9 + 7;
-
+    int mod = (int) 1e9 + 7;
     public int countTrapezoids(int[][] points) {
-        // Map y -> count of points having that y-coordinate
-        Map<Integer, Integer> mp = new HashMap<>();
-        for (int[] point : points) {
+        Map<Integer , Integer> mp = new HashMap<>();
+        for(int[] point : points){
             int y = point[1];
-            mp.put(y, mp.getOrDefault(y, 0) + 1);
+            mp.put(y, mp.getOrDefault(y , 0)+ 1);
         }
 
-        long result = 0;
-        long prevHorizontalLines = 0;
-
-        // Iterate over the hashmap
-        for (int count : mp.values()) {
-
-            long horizontalLines = (long) count * (count - 1) / 2;  // C(n, 2)
-
-            result = (result + horizontalLines * prevHorizontalLines) % M;
-
-            prevHorizontalLines += horizontalLines;
+        long ans = 0;
+        long prevLines = 0;
+        for(int cnt : mp.values()){
+            long lines =  (long)cnt * (cnt - 1) / 2 ;
+            ans += (lines * prevLines)% mod;
+            prevLines += lines;
+            
         }
-
-        return (int)(result % M);
+        return (int)(ans % mod);
     }
 }
