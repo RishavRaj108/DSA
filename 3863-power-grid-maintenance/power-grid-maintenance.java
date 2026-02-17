@@ -1,67 +1,81 @@
-class Solution {
-    public void dfs(int node,List<Integer>[] adj,int compId,int[] nodeId,
-    Map<Integer , TreeSet<Integer>> componentMap,boolean[] visited){
-        visited[node] = true;
+import java.util.*;
 
-        nodeId[node] = compId;
-        componentMap.computeIfAbsent(compId , k -> new TreeSet<>()).add(node);
-        for(int neigh : adj[node]){
-            if(!visited[neigh]){
-                dfs(neigh, adj,compId, nodeId, componentMap,visited);
+class Solution {
+
+    class DisjointSet {
+        List<Integer> parent = new ArrayList<>();
+        List<Integer> size = new ArrayList<>();
+
+        public DisjointSet(int n) {
+            for (int i = 0; i < n; i++) {
+                parent.add(i);
+                size.add(1);
+            }
+        }
+
+        public int findUPar(int node) {
+            if (node == parent.get(node)) return node;
+            int up = findUPar(parent.get(node));
+            parent.set(node, up); // Path compression
+            return up;
+        }
+
+        public void unionBySize(int u, int v) {
+            int pu = findUPar(u);
+            int pv = findUPar(v);
+
+            if (pu == pv) return;
+
+            if (size.get(pu) < size.get(pv)) {
+                parent.set(pu, pv);
+                size.set(pv, size.get(pv) + size.get(pu));
+            } else {
+                parent.set(pv, pu);
+                size.set(pu, size.get(pu) + size.get(pv));
             }
         }
     }
 
     public int[] processQueries(int c, int[][] connections, int[][] queries) {
-        List<Integer>[] adj = new ArrayList[c + 1];
-        for(int i = 1;i <= c;i++){
-            adj[i] = new ArrayList<>();
+
+        // Step 1: Create DSU (0-based)
+        DisjointSet dsu = new DisjointSet(c);
+
+        // Step 2: Build connected components
+        for (int[] edge : connections) {
+            int u = edge[0] - 1;  // convert to 0-based
+            int v = edge[1] - 1;
+            dsu.unionBySize(u, v);
         }
-        for(int[] edge : connections){
-            int u = edge[0];
-            int v = edge[1];
-            adj[u].add(v);
-            adj[v].add(u);
-        }
 
-        // build the components 
-        // keep track of which node is in which component
-        // for dfs keep track of 
+        // Step 3: root → TreeSet of active nodes
+        Map<Integer, TreeSet<Integer>> map = new HashMap<>();
 
-        int[] nodeId = new int[c + 1];
-        Map<Integer , TreeSet<Integer>> componentMap = new HashMap<>();
-        boolean[] visited = new boolean[c + 1];
-
-        for(int node = 1;node <= c;node++){
-            if(!visited[node]){
-                dfs(node , adj,node , nodeId , componentMap,visited);
-            }
+        for (int i = 0; i < c; i++) {
+            int root = dsu.findUPar(i);
+            map.computeIfAbsent(root, k -> new TreeSet<>()).add(i);
         }
 
         List<Integer> result = new ArrayList<>();
 
-        for(int[] query : queries){
-            int type = query[0];
-            int node = query[1];
-            int compId = nodeId[node];
-            TreeSet<Integer> set = componentMap.get(compId);
+        // Step 4: Process queries
+        for (int[] q : queries) {
+            int type = q[0];
+            int node = q[1] - 1;  // convert to 0-based
+            int root = dsu.findUPar(node);
+            TreeSet<Integer> set = map.get(root);
 
-            if(type == 1){
-                if(set.contains(node)){
-                    result.add(node);
-                }else if(!set.isEmpty()){
-                    result.add(set.first());
-                }else{
-                    result.add(-1);
+            if (type == 1) {
+                if (set.contains(node)) {
+                    result.add(node + 1);  // convert back to 1-based
+                } else {
+                    result.add(set.isEmpty() ? -1 : set.first() + 1);
                 }
-            }else{
+            } else {
                 set.remove(node);
             }
         }
-        int[] answer = new int[result.size()];
-        for(int i = 0;i < result.size();i++){
-            answer[i] = result.get(i);
-        }
-        return answer;
+
+        return result.stream().mapToInt(i -> i).toArray();
     }
 }
