@@ -1,43 +1,38 @@
 class Solution {
-
-    //to find the digit sum
-    int sum(int num) {
-        int s = 0;
-        while (num > 0) {
-            s += num % 10;
-            num /= 10;
-        }
-        return s;
-    }
-    //minimum swaps needed to make both array equal
-    int solve(int[] nums, int[][] arr) {
-        int n = arr.length;
-        Map<Integer, Integer> map = new HashMap<>();
-        //add the elements with its index in map
-        for (int i = 0; i < n; i++)
-            map.put(nums[i], i);
-        //to track the visited elements
-        boolean[] v = new boolean[n];
+    public int sum(int num) {
         int ans = 0;
-        //travel all the elements
-        for (int i = 0; i < n; i++) {
-            //if the current element is already visited 
-            //or the element is in correct sorted place
-            if (v[i] || nums[i] == arr[i][1])
-                continue;
-            //find the size of cycle , we can swap the elements in 
-            //cycle somehow in minimum swaps of size-1
-            int size = 0;
-            int j = i;
+        while (num > 0) {
+            ans += num % 10;
+            num = num / 10;
+        }
+        return ans;
+    }
 
-            while (!v[j]) {
-                v[j] = true;
-                j = map.get(arr[j][1]);
-                size++;
+    public int find(int[] nums , int[][] arr){
+        // now main part
+        // logic
+        // use map to store the index of nums
+        Map<Integer, Integer> pos = new HashMap<>();
+        for(int i = 0;i < nums.length;i++){
+            pos.put(nums[i] , i);
+        }
+        int n = nums.length;
+        boolean[] vis = new  boolean[n];
+        int ans = 0;
+
+        for(int i = 0;i < n;i++){
+            if(vis[i] || nums[i] == arr[i][1]){
+                continue;
             }
 
-            if (size > 1)
-                ans += (size - 1);
+            int cycle = 0;
+            int j = i;
+            while(!vis[j]){
+                vis[j] = true;
+                j = pos.get(arr[j][1]);
+                cycle++;
+            }
+            if(cycle > 1)ans += cycle - 1;
         }
         return ans;
     }
@@ -45,16 +40,14 @@ class Solution {
     public int minSwaps(int[] nums) {
         int n = nums.length;
         int[][] arr = new int[n][2];
-        for (int i = 0; i < n; i++) {
+        for(int i = 0;i < n;i++){
             arr[i][0] = sum(nums[i]);
             arr[i][1] = nums[i];
         }
-        //sort based on digit sum
-        Arrays.sort(arr, (a, b) -> {
-            if (a[0] != b[0]) return a[0] - b[0]; 
-            return a[1] - b[1]; 
-        });
 
-        return solve(nums, arr);
+        Arrays.sort(arr , (a,b) ->{if(a[0] != b[0]) return a[0] - b[0];
+        return a[1] - b[1];});
+        
+        return find(nums , arr);
     }
 }
