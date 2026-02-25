@@ -1,35 +1,21 @@
 class Solution {
     public boolean[] pathExistenceQueries(int n, int[] nums, int maxDiff, int[][] queries) {
-         // group[i] will store which connected component index i belongs to
+        // we can create an array to track which node is present on which 
+        // component
         int[] group = new int[n];
-        
-        int currentGroup = 0;  // ID of current connected component
-        
-        // Traverse array and divide into connected groups
-        for (int i = 1; i < n; i++) {
-            
-            // If difference between consecutive elements is greater than maxDiff,
-            // then connection breaks → new group starts
-            if (nums[i] - nums[i - 1] > maxDiff) {
-                currentGroup++;
-            }
-            
-            // Assign current group number to this index
-            group[i] = currentGroup;
+        int curr = 0;
+        for(int i = 1;i < n;i++){
+            if(Math.abs(nums[i] - nums[i - 1]) > maxDiff)curr++;
+            group[i] = curr;
         }
-        
-        boolean[] result = new boolean[queries.length];
-        
-        // Process each query
-        for (int i = 0; i < queries.length; i++) {
-            int u = queries[i][0];
-            int v = queries[i][1];
-            
-            // If both nodes belong to same group,
-            // then path exists
-            result[i] = (group[u] == group[v]);
+        boolean[] ans = new boolean[queries.length];
+        int ind = 0;
+        for(int[] quer : queries){
+            int u = quer[0];
+            int v = quer[1];
+            if(group[u] == group[v])ans[ind] = true;
+            ind++;
         }
-        
-        return result;
+        return ans;
     }
 }
