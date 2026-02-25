@@ -20,14 +20,10 @@ class Solution {
             int y = spot[1];
             boolean top = false,right = false,left = false,bottom = false;
 
-            if(maxCol.containsKey(y)){
                 if(maxCol.get(y) > x)top = true;
                 if(minCol.get(y) < x)bottom = true;
-            }
-            if(maxRow.containsKey(x)){
                 if(maxRow.get(x) > y)right= true;
                 if(minRow.get(x) < y)left = true;
-            }
             if(top && right && left && bottom){
                 cnt++;
             }
