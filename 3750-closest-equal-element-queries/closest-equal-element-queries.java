@@ -23,7 +23,6 @@ class Solution {
                 int next = list.get((i + 1) % size);
                 
                 int dist = (next - curr + n) % n;
-                if (dist == 0) dist = n;
                 
                 if (ans[curr] == -1)
                     ans[curr] = dist;
