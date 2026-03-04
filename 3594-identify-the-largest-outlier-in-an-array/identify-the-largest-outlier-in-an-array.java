@@ -11,16 +11,14 @@ class Solution {
         int maxi = Integer.MIN_VALUE;
         
         for(int num : nums){
-            // remove this from map because it is outlier
+            // check is this no outlier
+            
+            int res = sum - num;
+            if(res % 2 != 0)continue;
             mp.put(num , mp.get(num) - 1);
-
-            int rem = sum - num;
-
-            if(rem % 2 == 0){
-                int y = rem / 2;
-                if(mp.getOrDefault(y , 0) > 0){
-                    maxi = Math.max(maxi , num);
-                }
+            res = res / 2;
+            if(mp.getOrDefault(res , 0) > 0){
+               maxi = Math.max(maxi , num);
             }
             mp.put(num , mp.get(num) + 1);
         }
