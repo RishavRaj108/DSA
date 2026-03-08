@@ -1,36 +1,37 @@
 class Solution {
     public int countOfSubstrings(String word, int k) {
-        return atLeast(word, k) - atLeast(word, k + 1);
+        return atLeast( word , k) - atLeast(word , k+ 1);
     }
-    
-    private int atLeast(String word, int k) {
-        Map<Character, Integer> vowels = new HashMap<>();
-        int left = 0, consonants = 0, count = 0;
+    public int atLeast(String word , int k){
+        if( k < 0)return 0;
+
+        Map<Character , Integer> vowels = new HashMap<>();
+
+        int consonants = 0;
+        int res = 0;
+        int left = 0;
         int n = word.length();
-        
-        for (int right = 0; right < n; right++) {
+        for(int right = 0;right < word.length();right++){
             char ch = word.charAt(right);
-            if ("aeiou".indexOf(ch) >= 0) {
-                // vowels.merge(ch, 1, Integer::sum);
+            if("aeiou".indexOf(ch) >= 0){
                 vowels.put(ch , vowels.getOrDefault(ch , 0) + 1);
-            } else {
+            }else{
                 consonants++;
             }
             
-            // Shrink while window is valid (has all vowels AND >= k consonants)
-            while (vowels.size() == 5 && consonants >= k) {
-                count += (n - right);  // All extensions of this window are valid
-                char leftChar = word.charAt(left);
-                if ("aeiou".indexOf(leftChar) >= 0) {
-                    // vowels.merge(leftChar, -1, Integer::sum);
-                    vowels.put(leftChar , vowels.get(leftChar) - 1);
-                    if (vowels.get(leftChar) == 0) vowels.remove(leftChar);
-                } else {
+            // main logic how are we going to count the string which is having k or more than k  consonants
+            while(vowels.size() == 5 && consonants >= k){
+                res += (n - right);
+                char leftCh = word.charAt(left);
+                if("aeiou".indexOf(leftCh) >= 0){
+                    vowels.put(leftCh , vowels.get(leftCh) - 1);
+                    if(vowels.get(leftCh) == 0)vowels.remove(leftCh);
+                }else{
                     consonants--;
                 }
                 left++;
             }
         }
-        return count;
+        return res;
     }
 }
