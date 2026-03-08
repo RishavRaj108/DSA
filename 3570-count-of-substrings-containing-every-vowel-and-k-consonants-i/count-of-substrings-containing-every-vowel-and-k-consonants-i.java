@@ -11,7 +11,8 @@ class Solution {
         for (int right = 0; right < n; right++) {
             char ch = word.charAt(right);
             if ("aeiou".indexOf(ch) >= 0) {
-                vowels.merge(ch, 1, Integer::sum);
+                // vowels.merge(ch, 1, Integer::sum);
+                vowels.put(ch , vowels.getOrDefault(ch , 0) + 1);
             } else {
                 consonants++;
             }
@@ -21,7 +22,8 @@ class Solution {
                 count += (n - right);  // All extensions of this window are valid
                 char leftChar = word.charAt(left);
                 if ("aeiou".indexOf(leftChar) >= 0) {
-                    vowels.merge(leftChar, -1, Integer::sum);
+                    // vowels.merge(leftChar, -1, Integer::sum);
+                    vowels.put(leftChar , vowels.get(leftChar) - 1);
                     if (vowels.get(leftChar) == 0) vowels.remove(leftChar);
                 } else {
                     consonants--;
