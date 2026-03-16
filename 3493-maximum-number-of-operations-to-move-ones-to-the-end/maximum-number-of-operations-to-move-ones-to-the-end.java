@@ -1,22 +1,21 @@
 class Solution {
     public int maxOperations(String s) {
         int n = s.length();
-        int result = 0;
-        int i = 0;
-        int count1seen = 0;
-
-        while (i < n) {
-            if (s.charAt(i) == '0') {
-                result += count1seen;
-                while (i < n && s.charAt(i) == '0') { // move until we reach next '1'
+        
+        int cntOnes = 0;
+        int opr = 0;
+        for(int i = 0;i < n;i++){
+            char ch = s.charAt(i);
+            if(ch == '1'){
+                cntOnes++;
+            }else{
+                opr += cntOnes;
+                while(i < n && s.charAt(i) == '0'){
                     i++;
                 }
-            } else {
-                count1seen++;
-                i++;
+                i--;
             }
         }
-
-        return result;
+        return opr;
     }
 }
