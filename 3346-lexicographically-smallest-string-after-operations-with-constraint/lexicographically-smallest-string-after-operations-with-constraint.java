@@ -22,10 +22,6 @@ class Solution {
             }
             ind++;
         }
-        StringBuilder sb = new StringBuilder();
-        for(char ch : chars){
-            sb.append(ch);
-        }
-        return sb.toString();
+        return new String(chars);
     }
 }
