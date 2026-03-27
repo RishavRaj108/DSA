@@ -16,9 +16,11 @@ class Solution {
         Arrays.sort(vals);
 
         int[] next = new int[n];
-        for(int i = 0;i < n;i++){
-            int j = i + 1;
-            while(j < n && vals[j] - vals[i] <= 2)j++;
+        int j = 0;
+        for (int i = 0; i < n; i++) {
+            while (j < n && vals[j] - vals[i] <= 2) {
+                j++;
+            }
             next[i] = j;
         }
 
