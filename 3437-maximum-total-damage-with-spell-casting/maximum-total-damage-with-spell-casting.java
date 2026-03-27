@@ -1,49 +1,39 @@
 class Solution {
-    private int n;
-    private Map<Long, Long> freq;
-    private long[] dp;
-
-    private long solve(int i, List<Long> nums) {
-        if (i >= n)
-            return 0;
-
-        if (dp[i] != -1)
-            return dp[i];
-
-        // skip current damage
-        long skip = solve(i + 1, nums);
-
-        // take current damage
-        int j = lowerBound(nums, i + 1, nums.get(i) + 3);
-        long take = nums.get(i) * freq.get(nums.get(i)) + solve(j, nums);
-
-        return dp[i] = Math.max(skip, take);
-    }
-
-    // Helper function to replicate C++ lower_bound
-    private int lowerBound(List<Long> nums, int start, long target) {
-        int low = start, high = nums.size();
-        while (low < high) {
-            int mid = (low + high) / 2;
-            if (nums.get(mid) < target)
-                low = mid + 1;
-            else
-                high = mid;
-        }
-        return low;
-    }
-
+    Map<Integer, Long> mp;
     public long maximumTotalDamage(int[] power) {
-        freq = new HashMap<>();
-        for (int x : power)
-            freq.put((long)x, freq.getOrDefault((long)x, 0L) + 1);
+        mp = new HashMap<>();
+        for(int p : power){
+            mp.put(p , mp.getOrDefault(p , 0L) + p);
+        }
+        // now get the unique vals and put it in an array
+        int n = mp.size();
+        int[] vals = new int[n];
+        int ind = 0;
+        for(int val : mp.keySet()){
+            vals[ind++] = val;
+        }
 
-        List<Long> nums = new ArrayList<>(freq.keySet());
-        Collections.sort(nums);
-        n = nums.size();
-        dp = new long[n];
-        Arrays.fill(dp, -1);
+        Arrays.sort(vals);
 
-        return solve(0, nums);
+        int[] next = new int[n];
+        for(int i = 0;i < n;i++){
+            int j = i + 1;
+            while(j < n && vals[j] - vals[i] <= 2)j++;
+            next[i] = j;
+        }
+
+        long[] dp = new long[n];
+        Arrays.fill(dp , -1);
+        return solve(0,vals , next, dp);
+
+    }
+    public long solve(int ind , int[] vals , int[] next ,long[] dp){
+        if(ind >= vals.length)return 0;
+        if(dp[ind] != -1)return dp[ind];
+
+        // now 2 possiblity take and not take
+        long take = mp.get(vals[ind]) + solve(next[ind] , vals, next,dp);
+        long notake = solve(ind + 1 , vals,next,dp);
+        return dp[ind] = Math.max(take, notake);
     }
 }
