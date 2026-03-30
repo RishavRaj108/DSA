@@ -1,51 +1,35 @@
 class Solution {
-
-    // Memo: (index, prevIndex, remaining k)
-    int[][][] dp;
     int[] nums;
     int n;
-
+    int[][][] dp;
     public int maximumLength(int[] nums, int k) {
         this.nums = nums;
         this.n = nums.length;
-
-        // prevIndex: -1 → mapped to 0, rest shifted by +1
-        dp = new int[n][n + 1][k + 1];
-
-        for (int[][] layer : dp) {
-            for (int[] row : layer) {
-                Arrays.fill(row, -1);
+        this.dp = new int[n][n + 1][k + 1];
+        for(int[][] mat: dp){
+            for(int[] arr : mat){
+                Arrays.fill(arr , -1);
             }
         }
-
-        return solve(0, -1, k);
+        return find(0 , -1 , k);
     }
+    public int find(int ind ,int prev , int k){
+        if(ind >= n)return 0;
+        int prevKey = prev + 1;
+        if(dp[ind][prevKey][k] != -1)return dp[ind][prevKey][k];
 
-    private int solve(int i, int prevIndex, int k) {
-        // Base case: no elements left
-        if (i == n) return 0;
-        // Shift prevIndex for storage
-        int prevKey = prevIndex + 1;
-        if (dp[i][prevKey][k] != -1) {
-            return dp[i][prevKey][k];
-        }
-        // ❌ Option 1: Skip current element
-        int notTake = solve(i + 1, prevIndex, k);
-        // ✅ Option 2: Take current element
+        int skip = find(ind + 1, prev,k);
         int take = 0;
-
-        if (prevIndex == -1) {
-            // First element → no change used
-            take = 1 + solve(i + 1, i, k);
-        } else {
-            if (nums[i] == nums[prevIndex]) {
-                // Same value → no change
-                take = 1 + solve(i + 1, i, k);
-            } else if (k > 0) {
-                // Different value → consume 1 change
-                take = 1 + solve(i + 1, i, k - 1);
+        // for take part
+        if(prev == -1){
+           take = 1 + find(ind + 1, ind , k);
+        }else{
+            if(nums[prev] == nums[ind]){
+                take = 1 + find(ind + 1, ind , k);
+            }else if(k > 0){
+                take = 1 + find(ind + 1,ind , k - 1);
             }
         }
-        return dp[i][prevKey][k] = Math.max(take, notTake);
+        return dp[ind][prevKey][k] = Math.max(take , skip);
     }
 }
