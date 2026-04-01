@@ -1,27 +1,29 @@
 class Solution {
+    int m , n;
     public int maxScore(List<List<Integer>> grid) {
-        Integer [][] dp = new Integer[grid.size()][grid.get(0).size()];
-        int ans = (int)(-1e9);
-        //Calling from every cell
-        for(int i =0 ; i < grid.size() ; i++){
-            for(int j =0 ; j < grid.get(0).size() ; j++){
-                ans= Math.max(helper(i,j,grid,dp),ans);
+        m = grid.size();
+        n = grid.get(0).size();
+        Integer[][] dp = new Integer[m][n];
+
+        int ans = Integer.MIN_VALUE;
+        for(int i = 0;i < m;i++){
+            for(int j = 0;j < n;j++){
+                ans = Math.max(ans , helper(i , j, dp , grid));
             }
         }
         return ans;
     }
-    int helper(int i , int j, List<List<Integer>> grid , Integer [][]dp){
-        if(i==grid.size()-1 && j==grid.get(0).size()-1){
-            return (int)(-1e9);
+    public int helper(int r,int c,Integer[][] dp,List<List<Integer>> grid){
+        if(dp[r][c] != null)return dp[r][c];
+        int right = (int)(-1e9);
+        int down = (int)(-1e9);
+        // we can go right or down
+        if(c < n - 1){
+           right = grid.get(r).get(c + 1) - grid.get(r).get(c) + Math.max(0 , helper(r , c + 1,dp,grid));
         }
-        if(dp[i][j]!=null) return dp[i][j];
-        int right =(int)(-1e9),down =(int)(-1e9);
-        if(j < grid.get(0).size()-1){
-            right = (grid.get(i).get(j+1) - grid.get(i).get(j)) + Math.max(0,helper(i,j+1,grid,dp));
+        if(r < m - 1){
+            down = grid.get(r + 1).get(c) - grid.get(r).get(c) + Math.max(0 , helper(r + 1, c ,dp,grid));
         }
-        if(i < grid.size()-1){
-            down = (grid.get(i+1).get(j) - grid.get(i).get(j)) + Math.max(0,helper(i+1,j,grid,dp));
-        }
-        return dp[i][j]=Math.max(right ,down );
+        return dp[r][c] = Math.max(right , down);
     }
 }
