@@ -5,26 +5,23 @@ class Solution {
         for(int i = 0;i < n;i++){
             for(int j = i;j < n;j++){
                 // now for each i and j remove it
-                List<Integer> ls = new ArrayList<>();
+                boolean check = true;
+                int prev = -1;
                 for(int k = 0;k < n;k++){
                     if(k >= i && k <= j){
                         continue;
                     }
-                    ls.add(nums[k]);
+                    if(nums[k] <= prev){
+                        check = false;
+                        break;
+                    }
+                    prev = nums[k];
                 }
-                if(check(ls)){
+                if(check){
                     cnt++;
                 }
             }
         }
         return cnt;
-    }
-    public boolean check(List<Integer> ls){
-        for(int i = 1;i < ls.size();i++){
-            if(ls.get(i) <= ls.get(i - 1)){
-                return false;
-            }
-        }
-        return true;
     }
 }
