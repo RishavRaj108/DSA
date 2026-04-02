@@ -1,7 +1,6 @@
 class Solution {
     class Pair {
-        int node;
-        int time;
+        int node, time;
         Pair(int node, int time) {
             this.node = node;
             this.time = time;
@@ -12,11 +11,10 @@ class Solution {
         List<List<int[]>> adj = new ArrayList<>();
         for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
 
-        // ✅ FIX 1: Undirected graph
         for (int[] edge : edges) {
             int u = edge[0], v = edge[1], t = edge[2];
             adj.get(u).add(new int[]{v, t});
-            adj.get(v).add(new int[]{u, t}); // IMPORTANT
+            adj.get(v).add(new int[]{u, t});
         }
 
         int[] ans = new int[n];
@@ -29,11 +27,12 @@ class Solution {
             Pair cur = pq.poll();
             int node = cur.node, time = cur.time;
 
-            // ✅ FIX 2: correct condition
-            if (time >= disappear[node]) continue;
+            
 
-            // If already visited with better time
-            if (ans[node] != -1 && ans[node] <= time) continue;
+            // ✅ Disappear check
+            if (time >= disappear[node]) continue;
+            // ✅ Skip stale states (MAIN FIX)
+            if (ans[node] != -1 && time >= ans[node]) continue;
 
             ans[node] = time;
 
@@ -41,7 +40,6 @@ class Solution {
                 int next = nei[0];
                 int newTime = time + nei[1];
 
-                // Only push if node still exists
                 if (newTime < disappear[next]) {
                     pq.add(new Pair(next, newTime));
                 }
