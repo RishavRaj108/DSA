@@ -29,8 +29,9 @@ class Solution {
                     // now check whether it falls in given condition or not
                     int n1 = time.get(i + 1);
                     int n2 = time.get( i + 2);
-                    if(n1 <= maxT && n2 <= maxT && !ans.contains(emp)){
+                    if(n1 <= maxT && n2 <= maxT ){
                         ans.add(emp);
+                        break;
                     }
                 }
             }
