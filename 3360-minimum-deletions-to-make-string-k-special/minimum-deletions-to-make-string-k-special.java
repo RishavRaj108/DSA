@@ -1,25 +1,28 @@
 class Solution {
     public int minimumDeletions(String word, int k) {
         int[] freq = new int[26];
-
-        for(char ch : word.toCharArray()){
+        for(char ch: word.toCharArray()){
             freq[ch - 'a']++;
         }
 
-        int res= Integer.MAX_VALUE;
+        // freq[i] - freq[j] <= k
+        // so freq[i] + k <= freq[j]
+        // freq[j] - freq[i] - k >= 0;
 
+        int ans = Integer.MAX_VALUE;
         for(int i = 0;i < 26;i++){
-            int dele = 0;
+            int cnt = 0;
             for(int j = 0;j < 26;j++){
                 if(i == j)continue;
                 if(freq[j] < freq[i]){
-                    dele += freq[j];
-                }else if(Math.abs(freq[j] - freq[i]) > k){
-                    dele += Math.abs(freq[j] - freq[i] -k);
+                    cnt+= freq[j];
+                }
+                if(freq[j] - freq[i] - k >= 0){
+                    cnt += freq[j] - freq[i] - k;
                 }
             }
-            res = Math.min(res , dele);
+            ans = Math.min(ans , cnt);
         }
-        return res;
+        return ans;
     }
 }
