@@ -1,41 +1,43 @@
 class Solution {
-    int[][] dp;
     public int maxOperations(int[] nums) {
+        // score is sum of deleted elements
+        // find max no of opr that can be performed such that all 
+        // opr score is same
+
+        // their is 3 possiblity of score
+
+        // pass it and use dp for computing all possiblity and get max
+        // dp states n n
         int n = nums.length;
         List<Integer> ls = new ArrayList<>();
         ls.add(nums[0] + nums[1]);
         ls.add(nums[n - 1] + nums[n - 2]);
         ls.add(nums[0] + nums[n - 1]);
+        int maxi = 1;
         
-        int maxi = 0;
-        for(int target : ls){
-            dp = new int[n][n];
-            // Fill with -1
-            for (int i = 0; i < n; i++) {
-                Arrays.fill(dp[i], -1);
-            }
-            int val = find(0,n - 1,target,nums);
-            maxi = Math.max(maxi , val);
+        for(int val : ls){
+           Integer[][] dp = new Integer[n][n];
+           maxi = Math.max(maxi , find(0,n - 1,nums, val , dp));
         }
         return maxi;
     }
-    public int find(int i , int j ,int target,int[] nums){
+    public int find(int i,int j,int[] nums,int val, Integer[][] dp){
         if(j - i + 1 < 2)return 0;
-        if(dp[i][j] != -1)return dp[i][j];
+        if(dp[i][j] != null)return dp[i][j];
 
-        int take = 0;
-        // first 2
-        if(i + 1 <= j && nums[i] + nums[i + 1] == target){
-            take = 1 + find(i + 2,j,target,nums);
+        // at each step we can choose any 3 possiblity
+        int first = 0;
+        int second = 0;
+        int third = 0;
+        if(nums[i] + nums[i+ 1] == val){
+            first = 1 + find(i + 2,j,nums,val,dp);
         }
-        // last 2
-        if(j + 1 >= i && nums[j] + nums[j - 1] == target){
-            take = Math.max(take , 1 + find(i , j - 2,target,nums));
+        if(nums[i] + nums[j] == val){
+            second =1 + find(i + 1,j - 1,nums,val,dp);
         }
-        // take first and last
-        if(nums[i] + nums[j] == target){
-            take = Math.max(take , 1 + find(i + 1,j - 1,target,nums));
+        if(nums[j] + nums[j - 1] == val){
+            third = 1 + find(i , j - 2,nums,val,dp);
         }
-        return dp[i][j] = take;
+        return dp[i][j]= Math.max(first , Math.max(second , third));
     }
 }
