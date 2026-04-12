@@ -1,31 +1,35 @@
 class Solution {
     public int countWays(List<Integer> nums) {
-        // task is to make all student happy
-        // if selected students > nums[i] then we can select this std
-        // if selected student < nums[i] then not selected
-        // if at any spot no of elements including it > nums[i] this is selection block but next should not be selected
+        // select a group of student
+        // i th happy 
+        // selected > nums[i]; selected
+        // not selected and selected < nums[i]
 
-        // we can select any group present in nums in any order
+        // 0 2 3 3 6 6 7 7 
 
-        Collections.sort(nums);
+        // if at any moment nums[i] < i + 1 && nums[i + 1] > selected
+
         int n = nums.size();
 
         int cnt = 0;
-        if(nums.get(0) > cnt){
+
+        Collections.sort(nums);
+
+        if(nums.get(0) < 1 && (n == 1 || nums.get(1) > 1)){
             cnt++;
         }
-        // 0 2 3 3 6 6 7 7
-        // t std > nums[i] then i selected
-        // t std < nums[i] then i not selected
-        for(int i = 1;i < n;i++){
-           if(nums.get(i - 1) < i && nums.get(i) > i){
+        if(nums.get(0) > 0){
             cnt++;
-           }
+        }
+        if(n == 1)return cnt;
+        for(int i = 1;i < n - 1;i++){
+            if(nums.get(i) < i + 1 && nums.get(i + 1) > i + 1){
+               cnt++;
+            }
         }
         if(nums.get(n - 1) < n){
             cnt++;
         }
         return cnt;
-
     }
 }
