@@ -1,8 +1,7 @@
 class Solution {
     public int numberOfGoodSubarraySplits(int[] nums) {
         int n = nums.length;
-
-        int mod = 1000000007;
+        long mod = 1000000007;
         long ans = 1;
         int prev= -1;
         for(int i = 0;i < n;i++){
