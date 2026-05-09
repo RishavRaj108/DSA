@@ -2,50 +2,48 @@ class Solution {
 
     static final long MOD = 1_000_000_007;
 
-    // Fast Power
+    // Computes a^b % MOD
     long power(long a, long b) {
-        long result = 1;
+
+        long ans = 1;
 
         while (b > 0) {
-            // If current bit is 1
-            if ((b & 1) == 1) {
-                result = (result * a) % MOD;
+
+            // if b is odd
+            if (b % 2 == 1) {
+                ans = (ans * a) % MOD;
             }
+
             a = (a * a) % MOD;
-            b >>= 1;
+            b /= 2;
         }
-        return result;
+
+        return ans;
     }
 
     public int countVisiblePeople(int n, int pos, int k) {
-        // Impossible case
-        if (k > n - 1) return 0;
-        // factorial[i] = i!
-        long[] factorial = new long[n + 1];
-        factorial[0] = 1;
+
+        long[] fact = new long[n + 1];
+
+        // factorial calculation
+        fact[0] = 1;
+
         for (int i = 1; i <= n; i++) {
-            factorial[i] = (factorial[i - 1] * i) % MOD;
+            fact[i] = (fact[i - 1] * i) % MOD;
         }
 
-        /*
-            Compute:
-            C(n-1, k)
-            Formula:
-            n! / (k! * (n-k)!)
-        */
+        // C(n-1, k)
 
-        long numerator = factorial[n - 1];
-        // inverse(k!)
-        long inverseK = power(factorial[k], MOD - 2);
+        long nFact = fact[n - 1];
 
-        // inverse((n-1-k)!)
-        long inverseRemaining =  power(factorial[n - 1 - k], MOD - 2);
+        long rFactInverse = power(fact[k], MOD - 2);
 
-        long combinations = numerator * inverseK % MOD;
-        combinations = combinations * inverseRemaining % MOD;
+        long remainingInverse = power(fact[n - 1 - k], MOD - 2);
 
-        // multiply by 2 because pos person is free
-        long answer = (2 * combinations) % MOD;
-        return (int) answer;
+        long nCr = nFact * rFactInverse % MOD;
+
+        nCr = nCr * remainingInverse % MOD;
+
+        return (int) ((2 * nCr) % MOD);
     }
 }
