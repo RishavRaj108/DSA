@@ -1,16 +1,14 @@
 class Solution {
     public long maximumScore(int[] nums, String s) {
-        long ans=0;
-        PriorityQueue<Integer> pq=new PriorityQueue<>(Collections.reverseOrder());
-        for(int i=0;i<s.length();i++)
-            {
-                pq.offer(nums[i]);
-                if(s.charAt(i)=='1')
-                {
-                    int top=pq.poll();
-                    ans+=top;
-                }
+        long score = 0;
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a,b) -> b - a);
+        for(int i = 0;i < nums.length;i++){
+            pq.add(nums[i]);
+            if(s.charAt(i) == '1'){
+                score += pq.poll();
             }
-        return ans;
+
+        }
+        return score;
     }
 }
