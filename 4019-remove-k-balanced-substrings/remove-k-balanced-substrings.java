@@ -2,7 +2,6 @@ class Solution {
     public String removeSubstring(String s, int k) {
         StringBuilder str = new StringBuilder();
         int openCount = 0;
-
         for (char c : s.toCharArray()) {
             str.append(c);
             if (c == '(') {
@@ -11,7 +10,6 @@ class Solution {
                 if (str.length() >= 2 * k && openCount >= k) {
                     int len = str.length();
                     boolean valid = true;
-
                     for (int i = len - 2 * k; i < len - k; i++) {
                         if (str.charAt(i) != '(') {
                             valid = false;
@@ -24,15 +22,13 @@ class Solution {
                             break;
                         }
                     }
-
                     if (valid) {
-                        str.setLength(str.length() - 2 * k);
+                        str.delete(str.length() - 2 * k,str.length());
                         openCount -= k;
                     }
                 }
             }
         }
-
         return str.toString();
     }
 }
