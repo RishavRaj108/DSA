@@ -1,43 +1,38 @@
 class Solution {
     public String removeSubstring(String s, int k) {
-        int n = s.length();
+        StringBuilder str = new StringBuilder();
+        int openCount = 0;
 
-        char[] stack = new char[n];
-        int[] run = new int[n];
-        int top = 0;
-
-        for (char ch : s.toCharArray()) {
-
-            stack[top] = ch;
-
-            if (top > 0 && stack[top - 1] == ch) {
-                run[top] = run[top - 1] + 1;
+        for (char c : s.toCharArray()) {
+            str.append(c);
+            if (c == '(') {
+                openCount++;
             } else {
-                run[top] = 1;
-            }
+                if (str.length() >= 2 * k && openCount >= k) {
+                    int len = str.length();
+                    boolean valid = true;
 
-            top++;
+                    for (int i = len - 2 * k; i < len - k; i++) {
+                        if (str.charAt(i) != '(') {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    for (int i = len - k; i < len; i++) {
+                        if (str.charAt(i) != ')') {
+                            valid = false;
+                            break;
+                        }
+                    }
 
-            // Check whether suffix is k '(' followed by k ')'
-            if (top >= 2 * k && stack[top - 1] == ')') {
-
-                int closeCount = run[top - 1];
-
-                if (closeCount >= k) {
-
-                    int openEnd = top - k - 1;
-
-                    if (openEnd >= 0 &&
-                        stack[openEnd] == '(' &&
-                        run[openEnd] >= k) {
-
-                        // Remove the whole k-balanced substring
-                        top -= 2 * k;
+                    if (valid) {
+                        str.setLength(str.length() - 2 * k);
+                        openCount -= k;
                     }
                 }
             }
         }
 
-        return new String(stack, 0, top);
+        return str.toString();
     }
 }
