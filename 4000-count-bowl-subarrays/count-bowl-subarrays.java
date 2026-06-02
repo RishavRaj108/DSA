@@ -1,20 +1,46 @@
 class Solution {
-    public long bowlSubarrays(int[] A) {
-        long res = 0;
-        Stack<Integer> s = new Stack<>();
-        for (int r = 0; r < A.length; ++r) {
-            int a = A[r];
-            while (!s.empty() && A[s.peek()] <= a) {
-                int l = s.pop();
-                if (r - l + 1 >= 3) {
-                    res += 1;
-                }
+    public long bowlSubarrays(int[] nums) {
+        int n = nums.length;
+
+        int[] left = new int[n];
+        int[] right = new int[n];
+
+        Arrays.fill(left , -1);
+        Arrays.fill(right , n);
+        Stack<Integer> st = new Stack<>();
+
+        for(int i = 0;i < n;i++){
+            int num = nums[i];
+            while(!st.isEmpty() && nums[st.peek()] < num){
+                st.pop();
             }
-            if (!s.empty() && r - s.peek() + 1 >= 3) {
-                res += 1;
+
+            if(!st.isEmpty()){
+                left[i] = st.peek();
             }
-            s.push(r);
+            st.push(i);
         }
-        return res;
+        st.clear();
+
+        for(int i = n - 1;i >= 0;i--){
+            while(!st.isEmpty() && nums[st.peek()] < nums[i]){
+                st.pop();
+            }
+            if(!st.isEmpty()){
+                right[i] = st.peek();
+            }
+            st.push(i);
+        }
+
+        long cnt = 0;
+        for(int i = 0;i < n;i++){
+            if(left[i] != -1 && i - left[i] >= 2){
+                cnt++;
+            }
+            if(right[i] != n && right[i] - i >= 2){
+                cnt++;
+            }
+        }
+        return cnt;
     }
 }
