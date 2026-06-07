@@ -1,21 +1,29 @@
 class Solution {
     public boolean[] pathExistenceQueries(int n, int[] nums, int maxDiff, int[][] queries) {
-        // we can create an array to track which node is present on which 
-        // component
         int[] group = new int[n];
-        int curr = 0;
+        int curr = 1;
         for(int i = 1;i < n;i++){
-            if(Math.abs(nums[i] - nums[i - 1]) > maxDiff)curr++;
+           int n1 = nums[i - 1];
+           int n2 = nums[i];
+
+           int diff = Math.abs(n1 - n2);
+           if(diff <= maxDiff){
+            if(i == 1)group[0] = curr;
             group[i] = curr;
+           }else{
+            curr++;
+            group[i] = curr;
+           }
         }
-        boolean[] ans = new boolean[queries.length];
+        boolean[] res = new boolean[queries.length];
         int ind = 0;
-        for(int[] quer : queries){
-            int u = quer[0];
-            int v = quer[1];
-            if(group[u] == group[v])ans[ind] = true;
-            ind++;
+        for(int[] q : queries){
+          if(group[q[0]] == group[q[1]]){
+            res[ind++] = true;
+          }else{
+            res[ind++] = false;
+          }
         }
-        return ans;
+        return res;
     }
 }
