@@ -22,6 +22,6 @@ class Solution {
                 maxi +=  (1 << i);
             }
         }
-        return maxi;
+        return maxi ;
     }
 }
