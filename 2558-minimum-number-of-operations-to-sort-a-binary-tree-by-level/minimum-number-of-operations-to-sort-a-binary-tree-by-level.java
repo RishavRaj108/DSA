@@ -40,7 +40,6 @@ class Solution {
                     ls.set(i , sorted.get(i));
                     ls.set(ind , temp);
                     mp.put(temp,ind);
-                    mp.put(sorted.get(i) , i);
                 }
             }
         }
