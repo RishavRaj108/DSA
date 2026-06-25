@@ -1,55 +1,45 @@
 class TaskManager {
-    class Task{
-        int userId, taskId, priority;
-        Task(int userId , int taskId,int priority){
-            this.userId = userId;
-            this.taskId = taskId;
-            this.priority = priority;
-        }
-    }
-    PriorityQueue<Task> pq;
-    Map<Integer, Task> map;
+    Map<Integer, int[]> mp; // taskId -> {userId, priority}
+    PriorityQueue<int[]> pq;
     public TaskManager(List<List<Integer>> tasks) {
-        pq = new PriorityQueue<>((a,b) ->{
-           if(a.priority != b.priority) return b.priority - a.priority;
-        return b.taskId - a.taskId;
-        } 
-        );
-        map = new HashMap<>();
-        for(List<Integer> task : tasks){
-            add(task.get(0), task.get(1),task.get(2));
+        mp = new HashMap<>();
+        pq = new PriorityQueue<>((a, b) -> {
+            if (a[2] != b[2]) return b[2] - a[2];
+            return b[1] - a[1];
+        });
+
+        for (List<Integer> t : tasks) {
+            add(t.get(0), t.get(1), t.get(2));
         }
     }
-    
     public void add(int userId, int taskId, int priority) {
-        Task task = new Task(userId,taskId,priority);
-        pq.add(task);
-        map.put(taskId, task);
+       mp.put(taskId, new int[]{userId, priority});
+        pq.add(new int[]{userId, taskId, priority});
     }
-    
     public void edit(int taskId, int newPriority) {
-        Task task = map.get(taskId);
-         Task updated = new Task(task.userId, taskId, newPriority);
-    map.put(taskId, updated);
-    pq.add(updated);
+        int userId = mp.get(taskId)[0];
+        mp.put(taskId, new int[]{userId, newPriority});
+        pq.add(new int[]{userId, taskId, newPriority});
     }
-    
     public void rmv(int taskId) {
-        map.remove(taskId);
+        mp.remove(taskId);
     }
-    
     public int execTop() {
-        while(!pq.isEmpty()){
-            Task task = pq.poll();
+       while(!pq.isEmpty()){
+         int[] cur = pq.poll();
+         int uId = cur[0];
+         int tId = cur[1];
+         int prio = cur[2];
 
-            if(!map.containsKey(task.taskId))continue;
-
-            if (map.get(task.taskId) != task) continue;
-
-            rmv(task.taskId);
-            return task.userId;
-        }
-        return -1;
+         if(mp.containsKey(tId)){
+            int[] latest = mp.get(tId);
+            if(latest[0] == uId && latest[1] == prio){
+                mp.remove(tId);
+                return uId;
+            }
+         }
+       }
+       return -1;
     }
 }
 
