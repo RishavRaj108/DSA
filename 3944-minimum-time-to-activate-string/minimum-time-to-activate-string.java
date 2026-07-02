@@ -1,53 +1,40 @@
 class Solution {
     public int minTime(String s, int[] order, int k) {
-        int n = s.length();
-
-        long total = 1L * n * (n + 1) / 2;
-
-        if (total < k) return -1;
-
-        int low = 0, high = n - 1;
-        int ans = -1;
-
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-
-            if (isActive(mid, order, n, total, k)) {
-                ans = mid;
+        int n = order.length;
+        int low = 0;
+        int high = n-1;
+        int res = -1;
+        while(low <= high){
+            int mid = low + (high - low)/2;
+            if(isPossible(mid , order,k)){
+                res = mid;
                 high = mid - 1;
-            } else {
+            }else{
                 low = mid + 1;
             }
         }
-
-        return ans;
+        return res;
     }
-
-    private boolean isActive(int t, int[] order, int n,
-                             long total, int k) {
-
-        boolean[] star = new boolean[n];
-
-        for (int i = 0; i <= t; i++) {
-            star[order[i]] = true;
+    public boolean isPossible(int pos , int[] order,int k){
+        int n = order.length;
+        List<Integer> ls = new ArrayList<>();
+        for(int i = 0;i <= pos;i++){
+            ls.add(order[i]);
         }
-
-        long invalid = 0;
-        int len = 0;
-
-        for (int i = 0; i < n; i++) {
-            if (!star[i]) {
-                len++;
-            } else {
-                invalid += 1L * len * (len + 1) / 2;
-                len = 0;
+        ls.add(-1);
+        ls.add(n);
+        Collections.sort(ls);
+        long cnt = 0;
+        long total = (1L * n * (n + 1))/2; 
+        
+        for(int i = 1;i < ls.size();i++){
+            int prev = ls.get(i - 1);
+            int curr = ls.get(i);
+            int size = curr - prev - 1;
+            if(size > 0){
+                cnt += (1L * size * (size + 1))/2;
             }
         }
-
-        invalid += 1L * len * (len + 1) / 2;
-
-        long valid = total - invalid;
-
-        return valid >= k;
+        return (total - cnt) >= k;
     }
 }
