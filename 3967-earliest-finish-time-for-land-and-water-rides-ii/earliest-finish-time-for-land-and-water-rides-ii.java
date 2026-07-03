@@ -1,20 +1,36 @@
 class Solution {
-    public int earliestFinishTime(int[] start1, int[] end1, int[] start2, int[] end2) {
-        // first the min 
-        int firstLand = find(start1,end1,start2,end2);
-        int firstWater = find(start2,end2,start1,end1);
-        return Math.min(firstLand , firstWater);
-    }
-    public int find(int[] start1, int[] end1, int[] start2, int[] end2){
-        int finish1 = Integer.MAX_VALUE;
-        int n = start1.length;
+    public int earliestFinishTime(int[] lst, int[] ld, int[] wst, int[] wd) {
+        int minTime = Integer.MAX_VALUE;
+        int n = lst.length;
+        int m = wst.length;
+        int mini = Integer.MAX_VALUE;
+        // try first for land;
         for(int i = 0;i < n;i++){
-           finish1 = Math.min( finish1 , start1[i] + end1[i]);
+           mini = Math.min(mini , lst[i] + ld[i]);
         }
-        int finish2 = Integer.MAX_VALUE;
-        for(int i = 0;i < start2.length;i++){
-            finish2 = Math.min(finish2 , Math.max(finish1 , start2[i]) + end2[i]);
+        for(int j = 0;j < m;j++){
+            int start = wst[j];
+            int dur = wd[j];
+            if(start <= mini){
+                minTime = Math.min(minTime , mini + dur);
+            }else{
+                minTime = Math.min(minTime , mini + (start - mini) + dur);
+            }
         }
-        return finish2;
+        mini = Integer.MAX_VALUE;
+        // try first for water
+        for(int i = 0;i < m;i++){
+           mini = Math.min(mini , wst[i] + wd[i]);
+        }
+        for(int j = 0;j < n;j++){
+            int start = lst[j];
+            int dur = ld[j];
+            if(start <= mini){
+                minTime = Math.min(minTime , mini + dur);
+            }else{
+                minTime = Math.min(minTime , mini + (start - mini) + dur);
+            }
+        }
+        return minTime;
     }
 }
