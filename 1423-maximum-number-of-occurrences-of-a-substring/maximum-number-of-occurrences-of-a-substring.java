@@ -1,29 +1,24 @@
 class Solution {
     public int maxFreq(String s, int maxLetters, int minSize, int maxSize) {
-        HashMap<String, Integer> map = new HashMap<>(); 
-        int maxOccurrences = 0; 
-        int left = 0, right = minSize; //window size 
-        while (right <= s.length()){
-            //count substrings within a window of size minsize
-            //all substrings larger than minsize must contain substrings of length equal to minsize, 
-            //so there will be at least as many unique substrings of length minsize as any longer length
-            String substr = s.substring(left, right); 
-            map.put(substr, map.getOrDefault(substr, 0) + 1); 
-            left++; right++; //shift window right
+        Map<String  , Integer> mp = new HashMap<>();
+        
+        for(int i = 0;i <= s.length() - minSize;i++){
+            String str = s.substring(i , i + minSize);
+            mp.put(str , mp.getOrDefault(str , 0) + 1);
         }
-           for (String substr : map.keySet()){    
-            int count = map.get(substr); 
-            if (count > maxOccurrences && isValidSubstring(substr, maxLetters))
-                maxOccurrences = count;
+        int maxi = 0;
+        for(String str : mp.keySet()){
+            if(isValid(str , maxLetters)){
+                maxi = Math.max(maxi , mp.get(str));
+            }
         }
-        return maxOccurrences;
+        return maxi;
     }
-    public boolean isValidSubstring(String substr, int maxLetters){
-        HashSet<Character> counts = new HashSet<>(); 
-        for (int i = 0; i < substr.length(); i++){
-            char c = substr.charAt(i);
-            counts.add(c);
+    public boolean isValid(String s , int cnt){
+        Set<Character> st = new HashSet<>();
+        for(char ch : s.toCharArray()){
+            st.add(ch);
         }
-        return counts.size() <= maxLetters;
+        return st.size() <= cnt;
     }
 }
