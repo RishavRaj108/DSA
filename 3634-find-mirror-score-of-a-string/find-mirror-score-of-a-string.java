@@ -1,27 +1,20 @@
 class Solution {
     public long calculateScore(String s) {
-        // At each step we must put valuse to map for each char
-        // mirror to find mirror of a char 'a' - > 'z'  26 - ch
-        // b -> y and 26 - ch + 'a'
-
-        Map<Integer , List<Integer>> mp = new HashMap<>();
-
         long score = 0;
-        int n = s.length();
-        for(int i = 0;i < n;i++){
-            char ch = s.charAt(i);
-            int mirror = 'z' - ch;
-            if(mp.containsKey(mirror)){
-                List<Integer> vals = mp.get(mirror);
-                score += i - vals.get(vals.size() - 1);
-                vals.remove(vals.size() - 1);
-                if(vals.size() == 0){
-                    mp.remove(mirror);
-                }
-                continue;
+        ArrayDeque<Integer>[] mp = new ArrayDeque[26];
+        for (int i = 0; i < 26; i++) {
+            mp[i] = new ArrayDeque<>();
+        }
+        for (int i = 0; i < s.length(); i++) {
+            int ch = s.charAt(i) - 'a';
+            int mirror = 25 - ch;
+            if (!mp[mirror].isEmpty()) {
+                int j = mp[mirror].pollLast();
+                score += i - j;
+            } else {
+                mp[ch].addLast(i);
             }
-            mp.computeIfAbsent(ch - 'a' , k -> new ArrayList<>()).add(i);
-        } 
+        }
         return score;
     }
 }
