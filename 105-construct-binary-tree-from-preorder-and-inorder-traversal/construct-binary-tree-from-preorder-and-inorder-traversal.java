@@ -19,21 +19,21 @@ class Solution {
     public TreeNode buildTree(int[] preorder, int[] inorder) {
         inorderInd = new HashMap<>();
         for(int i = 0;i < inorder.length;i++){
-           inorderInd.put(inorder[i] , i);
+            inorderInd.put(inorder[i] , i);
         }
-        return construct(preorder , 0 , inorder.length - 1);
+        return build(preorder , 0,inorder.length -1);
     }
-    public TreeNode construct(int[] preorder , int start , int end){
-        if(start > end)return null;
+    public TreeNode build(int[] preorder , int s , int e){
+        if(s > e) return null;
+
         int value = preorder[preInd++];
-        TreeNode root = new TreeNode(value);
-        root.left = construct(preorder , start , inorderInd.get(value) - 1);
-        root.right = construct(preorder ,inorderInd.get(value) + 1,end);
-        return root;
+        TreeNode node = new TreeNode(value);
+        int ind = inorderInd.get(value);
+        node.left = build(preorder , s , ind - 1);
+        node.right = build(preorder , ind + 1 , e);
+        return node;
     }
 }
-
-
 
 
 
