@@ -1,25 +1,33 @@
 class Solution {
     public long countPairs(String[] words) {
-        Map<String, Integer> gapMap = new HashMap<>();
-        for (String word : words) {
-            String gaps = gap(word);
-            gapMap.put(gaps, gapMap.getOrDefault(gaps, 0) + 1);
+        Map<String , Integer> mp = new HashMap<>();
+        for(String word : words){
+            String pattern = get(word);
+            mp.put(pattern , mp.getOrDefault(pattern , 0) + 1);
         }
-        long pairs = 0;
-        for (int count : gapMap.values()) {
-            pairs += (long) count * (count - 1) / 2;
+        long cnt = 0;
+        for(int val : mp.values()){
+            cnt += (1L * val * (val - 1))/2;
         }
-        return pairs;
+        return cnt;
     }
-    private String gap(String word) {
-        int n = word.length();
-        char[] gaps = new char[n - 1];
-        for (int i = 1; i < n; i++) {
-            int curr = word.charAt(i);
-            int prev = word.charAt(i - 1);
-            int diff = (curr - prev + 26) % 26;
-            gaps[i - 1] = (char) (diff + 'a');
-        }
-        return new String(gaps);
+    public String get(String s){
+       int n = s.length();
+       char[] chars = new char[n - 1];
+       for(int i = 1;i < n;i++){
+        int next = s.charAt(i);
+        int prev = s.charAt(i - 1);
+        int val = (next - prev + 26)% 26;
+        chars[i - 1] = (char) (val + 'a');
+       }
+       return new String(chars);
     }
 }
+
+
+
+
+
+
+
+
