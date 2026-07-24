@@ -1,27 +1,29 @@
 class Solution {
     public int minLength(int[] nums, int k) {
         int n = nums.length;
+        int mini = Integer.MAX_VALUE;
         int left = 0;
-        int curSum = 0;
-        int minL = Integer.MAX_VALUE;
-        HashMap<Integer, Integer> mp = new HashMap<>();
-        int right = 0;
-        for(;right < n;right++){
-            
-            mp.put(nums[right] , mp.getOrDefault(nums[right]  , 0) + 1);
-            if(mp.get(nums[right]) == 1){
-                curSum += nums[right];
+        Map<Integer,Integer> mp = new HashMap<>();
+        int sum = 0;
+        for(int right = 0;right < n;right++){
+            int num = nums[right];
+           if(!mp.containsKey(num)){
+             mp.put(num, 1);
+             sum += num;
+           }else{
+            mp.put( num , mp.get(num) + 1);
+           }
+           while(sum >= k){
+            num = nums[left];
+            mp.put(num , mp.get(num) - 1);
+            if(mp.get(num) == 0){
+                sum -= num;
+                mp.remove(num);
             }
-            while(curSum >= k){
-               minL = Math.min(right - left + 1, minL);
-               mp.put(nums[left] , mp.get(nums[left]) - 1);
-               if(mp.get(nums[left]) == 0){
-                curSum -= nums[left]; 
-               }
-               left++;
-            }
+            mini = Math.min(mini , right - left + 1);
+            left++;
+           }
         }
-        if(minL == Integer.MAX_VALUE)return -1;
-        return minL;
+        return mini == Integer.MAX_VALUE? -1 : mini;
     }
 }
