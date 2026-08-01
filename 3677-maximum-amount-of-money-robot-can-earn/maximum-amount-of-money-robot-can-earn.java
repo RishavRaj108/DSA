@@ -1,55 +1,34 @@
 class Solution {
     public int maximumAmount(int[][] coins) {
-        // m * n  grid starts from (0,0) 
-        // want to reach the bottom-right corner (m - 1, n - 1)
-        // robot can move either right or down at any point in time.
-        // return max profit robot can gain.
-        // robot has a special ability to neutralize robbers in at most 2 cells on its path
-        // logic 
-        // use recursion can move to right or down pass row , col ,nutri , coins
-        // aim to reach (m - 1)(n - 1)
         int m = coins.length;
         int n = coins[0].length;
-        int[][][] dp = new int[m ][n][2 + 1];
-        for(int[][] mat:dp){
-            for(int[] row : mat){
-                Arrays.fill(row,Integer.MIN_VALUE);
-            }
-        }
-
-        return maxProfit(0,0,2,coins,dp);
+        Integer[][][] dp = new Integer[m][n][3];
+        return find(0,0,2,coins , dp);
     }
-    public int maxProfit(int r,int c,int n,int[][] coins,int[][][] dp){
-        if(r == coins.length - 1 && c == coins[0].length - 1){
-            if(coins[r][c] > 0){
-                return coins[r][c];
-            }else{
-                if(n > 0)return 0;
-                else return coins[r][c];
+    public int find(int r,int c,int k,int[][] coins ,Integer[][][] dp){
+        int m = coins.length;
+        int n = coins[0].length;
+        if(r >= m || c >= n )return Integer.MIN_VALUE/2;
+        if(r == m - 1 && c == n - 1){
+            int coin = coins[r][c];
+            if(coin > 0)return coin;
+            else if(k > 0)return 0;
+            else{
+                return coin;
             }
         }
-        if(r == coins.length || c == coins[0].length){
-            return Integer.MIN_VALUE;
-        }
-        if(dp[r][c][n] != Integer.MIN_VALUE)return dp[r][c][n];
-        
-        int right = Integer.MIN_VALUE, down = Integer.MIN_VALUE;
-        if(coins[r][c] < 0 && n > 0){
-            right =maxProfit(r , c + 1,n - 1,coins,dp);
-            down = maxProfit(r + 1, c,n - 1,coins,dp);
-        }
-
-        int rightNN = maxProfit(r , c + 1,n,coins,dp);
-        int downNN = maxProfit(r + 1, c,n,coins,dp);
-        // now i need to figure out which is max and if it use nutri or not
-        int total = 0;
-        int maxiNN = Math.max(rightNN , downNN);
-        int maxi = Math.max(right,down);
-        if(maxiNN + coins[r][c] > maxi){
-            total = maxiNN + coins[r][c];
+        if(dp[r][c][k] != null)return dp[r][c][k];
+        int coin = coins[r][c];
+        int profit = Integer.MIN_VALUE;
+        if(coin > 0){
+            profit = coin + Math.max(find(r + 1,c,k,coins , dp) , find(r , c + 1,k,coins,dp));
         }else{
-            total = maxi;
+            if(k > 0){
+                profit = Math.max(find(r + 1,c,k - 1,coins , dp) , find(r , c + 1,k- 1,coins,dp));
+            }
+            int noTake = coin + Math.max(find(r + 1,c,k,coins , dp) , find(r , c + 1,k,coins,dp));
+            profit = Math.max(profit , noTake);    
         }
-        return dp[r][c][n] = total;
+        return dp[r][c][k] = profit;
     }
 }
