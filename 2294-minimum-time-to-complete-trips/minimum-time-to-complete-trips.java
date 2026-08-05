@@ -1,7 +1,6 @@
 class Solution {
     public long minimumTime(int[] time, int totalTr) {
         int n = time.length;
-        Arrays.sort(time);
         long low = 1;
         long high =1L * time[n - 1] * totalTr;
         long ans = -1;
