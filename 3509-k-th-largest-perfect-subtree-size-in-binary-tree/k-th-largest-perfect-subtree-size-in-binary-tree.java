@@ -14,32 +14,68 @@
  * }
  */
 class Solution {
-    class Pair{
+    class Triple{
         int size;
-        boolean perfect;
-        Pair(int size , boolean perfect){
+        int level;
+        boolean isBS;
+        Triple(int size,int level,boolean isBS){
             this.size = size;
-            this.perfect = perfect;
+            this.level = level;
+            this.isBS = isBS;
         }
     }
+    List<Integer> ls;
     public int kthLargestPerfectSubtree(TreeNode root, int k) {
-        List<Integer> ls = new ArrayList<>();
-
-        dfs(root , ls);
-        Collections.sort(ls , Collections.reverseOrder());
+        ls = new ArrayList<>();
+        find(root);
+        Collections.sort(ls);
         if(ls.size() < k)return -1;
-        return ls.get(k - 1);
-    } 
-    public Pair dfs(TreeNode node , List<Integer> ls){
-        if(node == null)return new Pair(0,true);
-
-        Pair left = dfs(node.left , ls);
-        Pair right = dfs(node.right , ls);
-        if(left.size == right.size && left.perfect && right.perfect){
-            int size = left.size + right.size + 1;
-            ls.add(size);
-            return new Pair(size , true);
+        return ls.get(ls.size() - k);
+    }
+    public Triple find(TreeNode root){
+        
+        if(root.left == null && root.right == null){
+           ls.add(1);
+           return new Triple(1,1,true);
+        } 
+        Triple left = new Triple(-1,-1,false);
+        Triple right = new Triple(-1,-1,false);
+        if(root.left != null){
+            left = find(root.left);
         }
-        return new Pair(left.size + right.size + 1 , false);
+        if(root.right != null){
+            right = find(root.right);
+        }
+        if((left.isBS && right.isBS ) && left.level == right.level){
+          int newSize =1 + left.size + right.size;
+          ls.add(newSize);
+          int level = right.level + 1;
+          return new Triple(newSize , level , true);
+        }else{
+            return new Triple(-1,-1,false);
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
