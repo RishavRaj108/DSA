@@ -1,53 +1,47 @@
 class Solution {
-    private Map<Integer, Long> totalDamageMap;
-    private List<Integer> vals;
-    private Long[] memo;
-    public long maximumTotalDamage(int[] power) {
-        // Step 1: Count total accumulated damage for each unique value
-        totalDamageMap = new HashMap<>();
-        for (int p : power) {
-            totalDamageMap.put(p, totalDamageMap.getOrDefault(p, 0L) + p);
+    Map<Integer , Long> totalDamage;
+    List<Integer> vals;
+    long[] memo;
+    public long maximumTotalDamage(int[] power){
+        totalDamage = new HashMap<>();
+        for(int i = 0;i < power.length;i++){
+            int pow = power[i];
+            totalDamage.put(pow , totalDamage.getOrDefault(pow , 0L) + pow);
         }
-        // Step 2: Sort unique spell values
-        vals = new ArrayList<>(totalDamageMap.keySet());
+        int n = totalDamage.size();
+        vals = new ArrayList<>(totalDamage.keySet());
         Collections.sort(vals);
-        int n = vals.size();
-        memo = new Long[n];
-        // Solve recursively starting from the last index down to 0
-        return solve(n - 1);
+        memo = new long[n];
+        Arrays.fill(memo , -1);
+        return find(n - 1);
     }
-    private long solve(int i) {
-        // Base case: no elements left
-        if (i < 0) {
-            return 0;
+    public long find(int ind){
+        if(ind < 0)return 0;
+        if(memo[ind] != -1)return memo[ind];
+        long skip = find(ind -1);
+        long take = totalDamage.get(vals.get(ind));
+        int nextValid = binarySrch(vals , ind);
+        if(nextValid != -1){
+            take += find(nextValid);
         }
-        // Return memoized result if already computed
-        if (memo[i] != null) {
-            return memo[i];
-        }
-        // Choice 1: Skip vals.get(i)
-        long skip = solve(i - 1);
-        // Choice 2: Take vals.get(i)
-        // Find the largest index `prev` where vals.get(prev) < vals.get(i) - 2
-        int prev = findLastValidIndex(i);
-        long take = totalDamageMap.get(vals.get(i)) + solve(prev);
-        return memo[i] = Math.max(take, skip);
+        return memo[ind] = Math.max(skip , take);
     }
-
-    // Binary search to find largest index with value < vals.get(index) - 2
-    private int findLastValidIndex(int index) {
-        int target = vals.get(index) - 2;
-        int low = 0, high = index - 1;
+    public int binarySrch(List<Integer> vals , int ind){
+        int high = ind - 1;
+        int low = 0;
+        int allowed = vals.get(ind) - 2;
         int ans = -1;
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-            if (vals.get(mid) < target) {
-                ans = mid;      // Possible valid index, try to find a larger one
+        while(low <= high){
+            int mid = low + (high - low)/2;
+            if(vals.get(mid) < allowed){
+                ans = mid;
                 low = mid + 1;
-            } else {
+            }else{
                 high = mid - 1;
             }
         }
         return ans;
     }
 }
+
+
