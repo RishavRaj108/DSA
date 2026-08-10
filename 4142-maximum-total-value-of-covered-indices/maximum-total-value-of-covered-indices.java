@@ -1,25 +1,34 @@
 class Solution {
     long[][] dp;
     public long maxTotal(int[] nums, String s) {
+        // we can move the token to its next state i - 1
         int n = nums.length;
+        // it can be in 2 states next and current
         dp = new long[n][2];
+        // if zero prev not covered and if 1 prev covered
         for(long[] arr : dp){
             Arrays.fill(arr , -1);
         }
         return find(0,1,nums,s);
     }
-    public long find(int i,int prevCov,int[] nums,String s){
-        if(i == nums.length)return 0;
-        if(dp[i][prevCov] != -1)return dp[i][prevCov];
-        long val = 0;
-        if(s.charAt(i) == '0'){
-          val = find(i + 1,0,nums,s);
+    public long find(int ind,int prev,int[] nums,String s){
+        if(ind == nums.length)return 0;
+
+        if(dp[ind][prev] != -1)return dp[ind][prev];
+        long profit = 0;
+        char ch = s.charAt(ind);
+
+        if(ch == '0'){
+           profit = find(ind + 1,0,nums,s);
         }else{
-           val =nums[i] + find(i + 1,1,nums,s);
-           if(prevCov == 0){
-            val = Math.max(val , nums[i - 1] + find(i + 1 , 0 , nums,s));
-           }
+            // if prev not covered
+            // take current
+            profit = nums[ind] + find(ind + 1,1,nums,s);
+
+            if(prev == 0){
+                profit = Math.max(profit , nums[ind - 1] + find(ind + 1 , 0,nums,s));
+            }
         }
-        return dp[i][prevCov] = val;
+        return dp[ind][prev] = profit;
     }
 }
