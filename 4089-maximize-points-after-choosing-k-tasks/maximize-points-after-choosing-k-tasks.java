@@ -7,11 +7,8 @@ class Solution {
             int diff = tech1[i] - tech2[i];
             ls.add(new int[]{diff , i});
         }
-
         Collections.sort(ls , (a,b) -> b[0] - a[0]);
-
         long profit = 0;
-
         for(int i = 0;i < k;i++){
             int[] val = ls.get(i);
             int ind = val[1];
@@ -25,7 +22,6 @@ class Solution {
                 profit += tech2[val[1]];
             }
         }
-
         return profit;
     }
 }
