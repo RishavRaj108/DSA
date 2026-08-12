@@ -1,30 +1,30 @@
 class Solution {
-    public long minimumCost(int m, int n, int[] hori, int[] verti) {
-        Arrays.sort(hori);
-        Arrays.sort(verti);
-
-        int vertiBlock = 1;
-        int horiBlock = 1;
-
-        long cost = 0;
-        int i = hori.length - 1, j = verti.length - 1;
+    public long minimumCost(int m, int n, int[] hCut, int[] vCut) {
+        Arrays.sort(hCut);
+        Arrays.sort(vCut);
+        int hP = 1;
+        int vP = 1;
+        int i = m - 2;
+        int j = n -2;
+        long cost = 0L;
+        m--;
+        n--;
         while(i >= 0 && j >= 0){
-            if(hori[i] > verti[j]){
-                cost += 1L * hori[i--] * vertiBlock;
-                horiBlock++;
-            }else{
-                cost += 1L * verti[j--] * horiBlock;
-                vertiBlock++; 
-            }
+           if(hCut[i] > vCut[j]){
+             cost += 1L * hCut[i--] * vP;
+             hP++;
+           }else{
+             cost += 1L * vCut[j--] * hP;
+             vP++;
+           }
         }
-
         while(i >= 0){
-            cost += 1L * hori[i--] * vertiBlock;
-            horiBlock++;
+            cost += 1L * hCut[i--] * vP;
+            hP++;
         }
-        while(j >= 0){
-            cost += 1L * verti[j--] * horiBlock;
-            vertiBlock++; 
+        while( j >= 0){
+            cost += 1L * vCut[j--] * hP;
+             vP++;
         }
         return cost;
     }
