@@ -1,27 +1,27 @@
 class Solution {
     public long maxPoints(int[] tech1, int[] tech2, int k) {
         int n = tech1.length;
-        List<int[]> ls = new ArrayList<>();
-        // array will store the diff and index
+        int[][] diff = new int[n][2];
         for(int i = 0;i < n;i++){
-            int diff = tech1[i] - tech2[i];
-            ls.add(new int[]{diff , i});
+            diff[i][0] = tech1[i] - tech2[i];
+            diff[i][1] = i;
         }
-        Collections.sort(ls , (a,b) -> b[0] - a[0]);
-        long profit = 0;
+        Arrays.sort(diff , (a,b) -> b[0] - a[0]);
+        long sum = 0L;
+        
         for(int i = 0;i < k;i++){
-            int[] val = ls.get(i);
-            int ind = val[1];
-            profit += tech1[ind];
+            int ind = diff[i][1];
+            sum += tech1[ind];
         }
+
         for(int i = k;i < n;i++){
-            int[] val = ls.get(i);
-            if(val[0] > 0){
-                profit += tech1[val[1]];
+            int ind = diff[i][1];
+            if(tech1[ind] > tech2[ind]){
+                sum += tech1[ind];
             }else{
-                profit += tech2[val[1]];
+                sum += tech2[ind];
             }
         }
-        return profit;
+        return sum;
     }
 }
