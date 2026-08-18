@@ -10,67 +10,51 @@
  */
 class Solution {
     public void reorderList(ListNode head) {
-        // find the middle amd also count the no of node
+        // get the middle point 
+        // reverse the last one
+        // create a new linkedlist
+
         ListNode slow = head;
         ListNode fast = head;
-        int cnt = 1;
-        ListNode prev= slow;
+        ListNode prev = slow;
+        
         while(fast != null && fast.next != null){
             prev = slow;
             slow = slow.next;
             fast = fast.next.next;
-            cnt += 2;
         }
-        if(fast == null)cnt--;
-        if(cnt % 2 == 1){
-          prev= slow.next;
-          slow.next = null;
-          slow = prev;
-        } else{
-           prev.next = null;
-        } 
-        ListNode mid = slow;
+
+        ListNode second = prev.next;
+        prev.next = null;
         ListNode first = head;
-        ListNode second = mid;
         
+        // reverse second one
         prev = null;
-        while(second != null){
-            ListNode next = second.next;
-            second.next = prev;
-            prev = second;
-            second = next;
+        ListNode curr = second;
+        while(curr != null){
+            ListNode next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
         }
         second = prev;
 
         ListNode dumy = new ListNode(-1);
-        ListNode curr = dumy;
+        curr = dumy;
         while(first != null || second != null){
-          if(first != null){
-            curr.next = first;
-            first = first.next;
-            curr = curr.next;
-          }
-          if(second != null){
-            curr.next = second;
-            second = second.next;
-            curr = curr.next;
-          }
+            if(first != null){
+               curr.next = first;
+               first = first.next;
+               curr = curr.next;
+            }
+            if(second != null){
+                curr .next = second;
+                second = second.next;
+                curr = curr.next;
+            }
         }
-        head = dumy.next;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
