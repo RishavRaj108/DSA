@@ -9,10 +9,10 @@ class Solution {
             int num = nums[i];
             int left = Math.abs(num - nums[i - 1]);
             int right = Math.abs(num - nums[i + 1]);
-            if(left <= right){
-                close[i] = i -1;
+            if(left > right){
+                close[i] = i +1;
             }else{
-                close[i] = i + 1;
+                close[i] = i - 1;
             }
         }
         int[] left = new int[n];
