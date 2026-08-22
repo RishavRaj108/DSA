@@ -18,8 +18,10 @@ class Solution {
             List<Integer> ls = new ArrayList<>();
             // now lis using binary search
             for(int num : vals){
-                int pos = Collections.binarySearch(ls, num);
-                if(pos < 0)pos = -(pos + 1);
+                int pos = Collections.binarySearch(ls,num);
+                if(pos < 0){
+                    pos = -(pos + 1);
+                }
                 if(pos == ls.size()){
                     ls.add(num);
                 }else{
