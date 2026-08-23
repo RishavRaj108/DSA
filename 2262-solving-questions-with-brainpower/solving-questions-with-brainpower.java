@@ -4,9 +4,7 @@ class Solution {
     public long mostPoints(int[][] questions) {
         int n = questions.length;
         dp = new long[n];
-
         Arrays.fill(dp, -1);
-
         return find(0, questions);
     }
 
