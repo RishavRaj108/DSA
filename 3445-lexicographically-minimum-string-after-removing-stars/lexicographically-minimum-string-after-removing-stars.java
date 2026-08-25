@@ -1,34 +1,34 @@
+import java.util.*;
+
 class Solution {
     public String clearStars(String s) {
-        List<Integer>[] group = new ArrayList[26];
-        for(int i = 0;i < 26;i++){
-            group[i] = new ArrayList<>();
-        }
-        StringBuilder sb = new StringBuilder();
-        int[] flag = new int[s.length()];
-        for(int i = 0;i < s.length();i++){
-            char ch = s.charAt(i);
-            if(ch != '*'){
-                group[ch - 'a'].add(i);
-            }else{
-                // this cahr is *
-                // remove the smallest char to its left
-                flag[i] = 1;
-                for(int j = 0;j < 26;j++){
-                    if(group[j].size() > 0){
-                        int ind = group[j].get(group[j].size() - 1);
-                        group[j].remove(group[j].size() - 1);
-                        flag[ind] = 1;
-                        break;
-                    }
-                }
+        int n = s.length();
+        PriorityQueue<Character> pq = new PriorityQueue<>();
+        Map<Character, Deque<Integer>> map = new HashMap<>();
+        boolean[] keep = new boolean[n];
+        Arrays.fill(keep, true);
+
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (c == '*') {
+                char smallest = pq.poll();
+                int indexToRemove = map.get(smallest).removeLast();
+                keep[i] = false;               // Remove '*'
+                keep[indexToRemove] = false;   // Remove smallest char
+            } else {
+                pq.offer(c);
+                map.putIfAbsent(c, new ArrayDeque<>());
+                map.get(c).add(i);
             }
         }
-        for(int i = 0;i < flag.length;i++){
-            if(flag[i] != 1){
-                sb.append(s.charAt(i));
+
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            if (keep[i]) {
+                result.append(s.charAt(i));
             }
         }
-        return sb.toString();
+
+        return result.toString();
     }
 }
