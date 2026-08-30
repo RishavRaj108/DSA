@@ -1,29 +1,33 @@
 class Solution {
-    int m , n;
+    int[][] dp;
     public int maxScore(List<List<Integer>> grid) {
-        m = grid.size();
-        n = grid.get(0).size();
-        Integer[][] dp = new Integer[m][n];
+        // at least one move
+        int n = grid.size();
+        int m = grid.get(0).size();
+        dp = new int[n][m];
+        for(int[] arr : dp){Arrays.fill(arr , -1);}
 
-        int ans = Integer.MIN_VALUE;
-        for(int i = 0;i < m;i++){
-            for(int j = 0;j < n;j++){
-                ans = Math.max(ans , helper(i , j, dp , grid));
+        int maxi = Integer.MIN_VALUE;
+        for(int i = 0;i < n;i++){
+            for(int j = 0;j < m;j++){
+                maxi = Math.max(maxi , find(i , j , grid));
             }
         }
-        return ans;
+        return maxi;
     }
-    public int helper(int r,int c,Integer[][] dp,List<List<Integer>> grid){
-        if(dp[r][c] != null)return dp[r][c];
-        int right = (int)(-1e9);
-        int down = (int)(-1e9);
-        // we can go right or down
-        if(c < n - 1){
-           right = grid.get(r).get(c + 1) - grid.get(r).get(c) + Math.max(0 , helper(r , c + 1,dp,grid));
+    public int find(int r,int c,List<List<Integer>> grid){
+        int n = grid.size();
+        int m = grid.get(0).size();
+        if(dp[r][c] != -1)return dp[r][c];
+
+        int down = Integer.MIN_VALUE;
+        int right = Integer.MIN_VALUE;
+        if(r != n -1){
+           down = grid.get(r + 1).get(c) - grid.get(r).get(c) + Math.max(0,find(r + 1 , c , grid));
         }
-        if(r < m - 1){
-            down = grid.get(r + 1).get(c) - grid.get(r).get(c) + Math.max(0 , helper(r + 1, c ,dp,grid));
+        if(c != m - 1){
+            right = grid.get(r ).get(c+ 1) - grid.get(r).get(c) +Math.max(0 ,find(r , c + 1 , grid) ) ;
         }
-        return dp[r][c] = Math.max(right , down);
+       return dp[r][c] = Math.max(down , right);
     }
 }
