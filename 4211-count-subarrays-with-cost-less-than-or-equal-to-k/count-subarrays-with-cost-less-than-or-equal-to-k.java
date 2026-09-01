@@ -1,47 +1,32 @@
 class Solution {
     public long countSubarrays(int[] nums, long k) {
-        int n = nums.length;
-
-        Deque<Integer> maxD = new LinkedList<>();
-        Deque<Integer> minD = new LinkedList<>();
+        TreeMap<Integer, Integer> mp = new TreeMap<>();
 
         long ans = 0;
+        int i = 0;
+        int n = nums.length;
 
-        int left = 0;
-        for(int right = 0;right < n;right++){
+        for (int j = 0; j < n; j++) {
 
-            // for max
-            while(!maxD.isEmpty() && nums[maxD.peekLast()] <= nums[right]){
-                maxD.pollLast();
-            }
-            maxD.add(right);
+            // Add nums[j]
+            mp.put(nums[j], mp.getOrDefault(nums[j], 0) + 1);
 
-            // for min
-            while(!minD.isEmpty() && nums[minD.peekLast()] >= nums[right]){
-                minD.pollLast();
-            }
-            minD.add(right);
+            // Shrink window while cost > k
+            while (1L * (mp.lastKey() - mp.firstKey()) * (j - i + 1) > k) {
 
-            while(left <= right){
-                int mini = nums[minD.peek()];
-                int maxi =nums[ maxD.peek()];
+                mp.put(nums[i], mp.get(nums[i]) - 1);
 
-                long cost =1L * (maxi - mini) * ( right - left + 1);
-
-                if(cost <= k){
-                    break;
+                if (mp.get(nums[i]) == 0) {
+                    mp.remove(nums[i]);
                 }
 
-                if(maxD.peek() == left){
-                    maxD.poll();
-                }
-                if(minD.peek() == left){
-                    minD.poll();
-                }
-                left++;
+                i++;
             }
-            ans += right - left + 1;
+
+            // All subarrays [i..j], [i+1..j], ... [j..j]
+            ans += j - i + 1;
         }
+
         return ans;
     }
 }
