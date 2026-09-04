@@ -1,34 +1,44 @@
 class Solution {
     public long validSubstringCount(String word1, String word2) {
         int n = word1.length();
-        int[] need = new int[26];
-        int[] freq = new int[26];
-        for (char c : word2.toCharArray()) {
-            need[c - 'a']++;
+        int m = word2.length();
+
+        int[]req = new int[26];
+        int[]curr = new int[26];
+        for(char ch : word2.toCharArray()){
+            int ind = ch - 'a';
+            req[ind]++;
         }
+        long ans = 0;
         int left = 0;
         int matched = 0;
-        long ans = 0;
-        for (int right = 0; right < n; right++) {
-            int idx = word1.charAt(right) - 'a';
-            freq[idx]++;
-            // This character contributes to satisfying word2
-            if (freq[idx] <= need[idx]) {
+        for(int right = 0;right < n;right++){
+            int ind = word1.charAt(right) - 'a';
+            curr[ind]++;
+            if(curr[ind] <= req[ind]){
                 matched++;
             }
-            // Window is valid
-            while (matched == word2.length()) {
-                // Every substring starting at 'left'
-                // and ending at right or later is valid
+
+            while(matched == m){
                 ans += n - right;
-                int remove = word1.charAt(left) - 'a';
-                freq[remove]--;
-                if (freq[remove] < need[remove]) {
+                int rmv = word1.charAt(left) - 'a';
+                curr[rmv]--;
+                if(curr[rmv] < req[rmv]){
                     matched--;
                 }
                 left++;
             }
+
         }
         return ans;
     }
 }
+
+
+
+
+
+
+
+
+
