@@ -3,37 +3,32 @@ class Solution {
         int n = word1.length();
         int m = word2.length();
 
-        int[]req = new int[26];
-        int[]curr = new int[26];
+        long res = 0;
+        int[] freq = new int[26];
         for(char ch : word2.toCharArray()){
-            int ind = ch - 'a';
-            req[ind]++;
+           freq[ch - 'a']++;
         }
-        long ans = 0;
+        // freq is the need
+        int match = 0;
+        int[] curr = new int[26];
         int left = 0;
-        int matched = 0;
         for(int right = 0;right < n;right++){
-            int ind = word1.charAt(right) - 'a';
-            curr[ind]++;
-            if(curr[ind] <= req[ind]){
-                matched++;
+            int ch = word1.charAt(right) - 'a';
+            curr[ch]++;
+            if(curr[ch] <= freq[ch]){
+                match++;
             }
-
-            while(matched == m){
-                ans += n - right;
-                int rmv = word1.charAt(left) - 'a';
-                curr[rmv]--;
-                if(curr[rmv] < req[rmv]){
-                    matched--;
-                }
+            while(match == m){
+                int leftCh = word1.charAt(left) - 'a';
+                curr[leftCh]--;
+                if(curr[leftCh] < freq[leftCh])match--;
                 left++;
+                res += n - right;
             }
-
         }
-        return ans;
+        return res;
     }
 }
-
 
 
 
