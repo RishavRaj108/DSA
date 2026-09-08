@@ -1,22 +1,52 @@
 class Solution {
+    class TrieNode{
+        TrieNode[] no;
+        TrieNode(){
+            no = new TrieNode[10];
+           for(int i = 0;i < 10;i++){
+            no[i] = null;
+        }
+        }
+    }
+
+    public void insert(String s , TrieNode root){
+        TrieNode curr = root;
+        for(char ch : s.toCharArray()){
+            int ind = ch - '0';
+            if(curr.no[ind] == null){
+                curr.no[ind] = new TrieNode();
+            }
+            curr = curr.no[ind];
+        }
+    }
+
+    public int check(String str , TrieNode root){
+        int cnt = 0;
+        TrieNode curr = root;
+        for(char ch : str.toCharArray()){
+            int ind = ch - '0';
+            if(curr.no[ind] != null){
+                cnt++;
+                curr = curr.no[ind];
+            }else{
+                return cnt;
+            }
+        }
+        return cnt;
+    }
+    
+
     public int longestCommonPrefix(int[] arr1, int[] arr2) {
-       Set<String> s = new HashSet<>();
-       for(int num : arr1){
-        String str = "" + num;
-        for(int i = 0;i < str.length();i++){
-            s.add(str.substring(0,i + 1));
+        // create trie
+        TrieNode root = new TrieNode();
+        for(int n : arr1){
+            insert("" + n , root);
         }
-       } 
-       int maxi = 0;
-       for(int num : arr2){
-        String str = "" + num;
-        for(int i = 0;i < str.length();i++){
-            String prefix = str.substring(0,i + 1);
-            if(s.contains(prefix) && prefix.length() > maxi){
-                maxi = prefix.length();
-            } 
+
+        int ans = 0;
+        for(int n : arr2){
+            ans = Math.max(ans ,  check("" + n, root));
         }
-       }
-       return maxi;
+        return ans;
     }
 }
