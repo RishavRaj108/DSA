@@ -4,30 +4,29 @@ class Solution {
         PriorityQueue<Integer> left = new PriorityQueue<>();
         PriorityQueue<Integer> right = new PriorityQueue<>();
 
-        int i = 0;
-        int j = n - 1;
-
-        long res = 0;
+        int l = 0;
+        int r = n -1;
+        while(l < n && left.size() < candidates){
+            left.add(costs[l++]);
+        }
+        while(r >= l && right.size() < candidates){
+            right.add(costs[r--]);
+        }
+        long ans = 0;
 
         while(k-- > 0){
-           while(left.size() != candidates && i <= j){
-            left.add(costs[i++]);
-           }
-           while(right.size() != candidates && j >= i){
-            right.add(costs[j--]);
-           }
-
-           int leftVal = left.isEmpty()? Integer.MAX_VALUE : left.peek();
-           int rightVal = right.isEmpty()? Integer.MAX_VALUE : right.peek();
-
-           if(leftVal <= rightVal){
-            res += leftVal;
-            left.poll();
-           }else{
-            res += rightVal;
-            right.poll();
-           }
+            if(!left.isEmpty() && (right.isEmpty() || left.peek() <= right.peek()) ){
+                ans += left.poll();
+                if(l <= r ){
+                    left.add(costs[l++]);
+                }
+            }else{
+                ans += right.poll();
+                if(r >= l){
+                    right.add(costs[r--]);
+                }
+            }
         }
-        return res;
+        return ans;
     }
 }
