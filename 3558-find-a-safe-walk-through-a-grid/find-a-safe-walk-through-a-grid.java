@@ -2,45 +2,46 @@ class Solution {
     public boolean findSafeWalk(List<List<Integer>> grid, int health) {
         int m = grid.size();
         int n = grid.get(0).size();
-        int[][][] dp = new int[m][n ][health + 1];
-        for(int[][] arr : dp){
-            for(int[] row : arr){
-                Arrays.fill(row , -1);
+        int[][] dirs = {{0,-1},{-1,0},{0,1},{1,0}};
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b) -> b[2] - a[2]);
+        if(grid.get(0).get(0) == 1)health--;
+        pq.add(new int[]{0,0,health});
+        int[][] dist = new int[m][n];
+        for(int[] row : dist){
+            Arrays.fill(row , Integer.MIN_VALUE);
+        }
+        dist[0][0] = health; 
+        while(!pq.isEmpty()){
+            int[] vals = pq.poll();
+            int r = vals[0];
+            int c = vals[1];
+            int hel = vals[2];
+            
+            for(int i = 0;i < 4;i++){
+                int nr = r + dirs[i][0];
+                int nc = c + dirs[i][1];
+                if(nr >= 0 && nr < m && nc >= 0 && nc < n){
+                    int newHel = hel - grid.get(nr).get(nc);
+                    if(newHel <= 0)continue;
+                    if(nr == m - 1 && nc == n - 1){
+                        return true;
+                    }
+                    if(newHel > dist[nr][nc]){
+                        dist[nr][nc] = newHel;
+                        pq.add(new int[]{nr,nc , newHel});
+                    }
+                }
             }
         }
-        boolean[][] vis = new boolean[m][n];
-        return find(0,0,grid,health , dp , vis);
-    }
-    public boolean find(int r,int c,List<List<Integer>> grid, int health,int[][][] dp ,boolean[][] vis){
-        int m = grid.size();
-        int n = grid.get(0).size();
-        if(r < 0 || r >= m || c < 0 || c >= n || health <= 0 || vis[r][c] == true)return false;
-        if(r == m - 1 && c == n - 1){
-            health -= grid.get(m - 1).get(n - 1);
-            if(health > 0)return true;
-            else return false;
-        }
-        if(grid.get(r).get(c) == 1){
-            health--;
-        }
-        if(dp[r][c][health] != -1 ){
-          if(dp[r][c][health] == 1)return true;
-          else return false;
-        } 
-        vis[r][c] = true;
-        
-        // try going to all four directions
-        boolean top = find(r - 1,c,grid,health , dp,vis);
-        boolean down = find(r + 1,c,grid,health , dp,vis);
-        boolean left = find(r ,c- 1,grid,health , dp,vis);
-        boolean right =find(r ,c + 1,grid,health , dp,vis);
-        vis[r][c] = false;
-        if(top || down || left || right){
-            dp[r][c][health] = 1;
-            return true;
-        }else{
-            dp[r][c][health] = 0;
-            return false;
-        }
+        return false;
     }
 }
+
+
+
+
+
+
+
+
+
