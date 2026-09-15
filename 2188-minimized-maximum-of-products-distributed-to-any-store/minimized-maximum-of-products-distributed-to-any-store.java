@@ -1,29 +1,29 @@
 class Solution {
     public int minimizedMaximum(int n, int[] quan) {
-       int m = quan.length;
-       int low = 0;
-       int high = -1;
-       for(int num : quan){
-        high = Math.max(num , high);
-       }
-
-       int ans = 0;
-       while(low <= high){
-        int mid = low + (high - low)/2;
-        if(isPossible(mid , quan , n)){
-            ans = mid;
-            high = mid - 1;
-        }else{
-            low = mid + 1;
+        // ONE store one product type 
+        int m = quan.length;
+        int s = 1;
+        int e = 0;
+        for(int val : quan){
+            e = Math.max(e , val);
         }
-       }
-       return ans;
+
+        int res = -1;
+        while(s <= e){
+            int mid = s + (e - s)/2;
+            if(isPoss(mid , n , quan)){
+                res = mid;
+                e = mid - 1;
+            }else{
+                s = mid + 1;
+            }
+        }
+        return res;
     }
-    public boolean isPossible(int cap , int[] quan , int n){
-        if(cap == 0)return false;
-        int cnt = 0;
-        for(int num : quan){
-            cnt += (num + cap - 1)/cap;
+    public boolean isPoss(int maxi,int n,int[] quan){
+        long cnt = 0;
+        for(int i = 0;i < quan.length;i++){
+            cnt += (quan[i] + maxi - 1)/maxi;
         }
         return cnt <= n;
     }
